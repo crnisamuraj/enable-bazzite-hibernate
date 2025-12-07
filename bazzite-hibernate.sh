@@ -144,10 +144,10 @@ sed -i 's/#\?HandleLidSwitchExternalPower=.*/HandleLidSwitchExternalPower=suspen
 # Update sleep.conf for timing (2 hours)
 # If section doesn't exist, append it
 if ! grep -q "\[Sleep\]" /etc/systemd/sleep.conf; then
-    echo -e "\n[Sleep]\nHibernateDelaySec=2h\nHibernateMode=platform" >> /etc/systemd/sleep.conf
+    echo -e "\n[Sleep]\nHibernateDelaySec=30m\nHibernateMode=platform" >> /etc/systemd/sleep.conf
 else
     # Else replace existing keys
-    sed -i 's/#\?HibernateDelaySec=.*/HibernateDelaySec=2h/' /etc/systemd/sleep.conf
+    sed -i 's/#\?HibernateDelaySec=.*/HibernateDelaySec=60m/' /etc/systemd/sleep.conf
     sed -i 's/#\?HibernateMode=.*/HibernateMode=platform/' /etc/systemd/sleep.conf
 fi
 
