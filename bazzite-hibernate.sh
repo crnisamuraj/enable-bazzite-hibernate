@@ -138,17 +138,18 @@ fi
 echo "Setting up Suspend-then-Hibernate..."
 
 # Update logind.conf to use smart suspend
-sed -i 's/#\?HandleLidSwitch=.*/HandleLidSwitch=suspend-then-hibernate/' /etc/systemd/logind.conf
-sed -i 's/#\?HandleLidSwitchExternalPower=.*/HandleLidSwitchExternalPower=suspend-then-hibernate/' /etc/systemd/logind.conf
+cp /usr/lib/systemd/logind.conf /etc/systemd/logind.conf.d/00-bazzite-hibernate.conf
+sed -i 's/#\?HandleLidSwitch=.*/HandleLidSwitch=suspend-then-hibernate/' /etc/systemd/logind.conf.d/00-bazzite-hibernate.conf
+sed -i 's/#\?HandleLidSwitchExternalPower=.*/HandleLidSwitchExternalPower=suspend-then-hibernate/' /etc/systemd/logind.conf.d/00-bazzite-hibernate.conf
 
 # Update sleep.conf for timing (2 hours)
 # If section doesn't exist, append it
 if ! grep -q "\[Sleep\]" /etc/systemd/sleep.conf; then
-    echo -e "\n[Sleep]\nHibernateDelaySec=30m\nHibernateMode=platform" >> /etc/systemd/sleep.conf
+    echo -e "\n[Sleep]\nHibernateDelaySec=60min\nHibernateMode=platform shutdown" >> /etc/systemd/sleep.conf
 else
     # Else replace existing keys
-    sed -i 's/#\?HibernateDelaySec=.*/HibernateDelaySec=60m/' /etc/systemd/sleep.conf
-    sed -i 's/#\?HibernateMode=.*/HibernateMode=platform/' /etc/systemd/sleep.conf
+    sed -i 's/#\?HibernateDelaySec=.*/HibernateDelaySec=60min/' /etc/systemd/sleep.conf
+    sed -i 's/#\?HibernateMode=.*/HibernateMode=platform shutdown/' /etc/systemd/sleep.conf
 fi
 
 # --- 8. Done ---
@@ -158,6 +159,6 @@ echo -e "${GREEN}==============================================${NC}"
 echo -e "1. A reboot is required to apply the new Kernel Arguments."
 echo -e "2. After reboot, closing your lid will:"
 echo -e "   - Sleep immediately (fast)."
-echo -e "   - Hibernate after 2 hours (saves battery)."
+echo -e "   - Hibernate after 60 mins (saves battery)."
 echo -e "3. You can test manually with: systemctl hibernate"
 echo -e "${GREEN}==============================================${NC}"
