@@ -138,6 +138,7 @@ fi
 echo "Setting up Suspend-then-Hibernate..."
 
 # Update logind.conf to use smart suspend
+mkdir -p /etc/systemd/logind.conf.d/
 cp /usr/lib/systemd/logind.conf /etc/systemd/logind.conf.d/00-bazzite-hibernate.conf
 sed -i 's/#\?HandleLidSwitch=.*/HandleLidSwitch=suspend-then-hibernate/' /etc/systemd/logind.conf.d/00-bazzite-hibernate.conf
 sed -i 's/#\?HandleLidSwitchExternalPower=.*/HandleLidSwitchExternalPower=suspend-then-hibernate/' /etc/systemd/logind.conf.d/00-bazzite-hibernate.conf
@@ -146,6 +147,7 @@ sed -i 's/#\?HandleLidSwitchExternalPower=.*/HandleLidSwitchExternalPower=suspen
 # If section doesn't exist, append it
 if ! grep -q "\[Sleep\]" /etc/systemd/sleep.conf; then
     echo -e "\n[Sleep]\nHibernateDelaySec=60min\nHibernateMode=platform shutdown" >> /etc/systemd/sleep.conf
+    echo "/etc/systemd/sleep.conf initialised"
 else
     # Else replace existing keys
     sed -i 's/#\?HibernateDelaySec=.*/HibernateDelaySec=60min/' /etc/systemd/sleep.conf
